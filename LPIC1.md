@@ -170,3 +170,15 @@ Jedes Unterverzeichnis repräsentiert ein Treibermodell des laufenden Kernels. S
 hald hat die Aufgabe, dbus darüber zu Informieren wenn ein Wechsellaufwerk an das System angeschlossen oder entfernt wird.
 
 udev werwaltet bei modernen Kernel-Versionen das `/dev`-Verzeichnis und sorgt dafür das nur Geräte angezeigt werden, die auch wirklich an den Computer angeschlossen sind.
+
+# Das System starten
+
+## Algemeines
+Nach dem Einschschalten des Computers werden zunächst einige Prozesse vom Bios ausgeführt. U. a. wird der POST (PowerOnSelfTest) ausgeführt, wo die grundsätzliche funktion des Systems überprüft wird. Zusätzlich wird ein Schnelltest des Artbeitsspeicher durchgeführt und seine größe ermittelt. Eine gründliche Hardwarediagnose kann dieser Test allerdings nicht ersetzten. Nach dem der Vorgang abgeschlossen wurde, sucht das BIOS nach einem Betriebssystem oder einem Programm welches ein Betriebssystem starten kann. Die Suchfolge wird im BIOS-Setup festgelegt. Sie kann Disketten-Laufwerke, CD-ROMs, HDDs aber auch USB-Wechseldateträger enthalten. Im weiteren Verlauf wird von einer HDD ausgegangen.
+Eine HDD kann in bis zu vier "echte" Partitionen aufgeteilt sein. Die Partitionen werden in einer Partitionstabelle im MBR verwaltet. Der MBR ist genau 512 Byte groß und befindet sich am Anfang der HDD (Sektor0 / Spur 0). Das BIOS liest nun einfach den im MBR enthaltenen Hexcode aus. Sollte ein Bootloader installiert sein, gibt das BIOS nun die Kontrolle an diesen ab. Falls kein Bootloader vorhanden ist, konsultiert das BIOS die Partitionstabelle und sucht nach einer Startfähigen Partition. Spätestens hier sollte sich nun ein Betriebssystem oder ein Bootloader befinden.
+
+## Kernel-Parameter
+Beim Start des Systems ist es möglich dem Kernel Parameter mitzugeben. Die Parameter können entweder in der .conf-Datei des Bootloaders oder beim Start von Hand hinterlegt werden. Letzeres macht natürlich nur Sinn wenn dem Kernel ausnahmsweise zu Testzwecken o. Ä. Parameter übergeben werden müssen. Wenn Parameter bei jedem Systemsstart übergeben werden sollen, müssen diese in conf-Datei des Bootloaders hinterlegt werden.
+Es ist z. B. möglich den init-Prozess gegen die /bin/bash auszutauschen um z. B. ein vergessenes root-Passwort zu ändern.
+
+## Startprotokollierung
