@@ -182,3 +182,31 @@ Beim Start des Systems ist es möglich dem Kernel Parameter mitzugeben. Die Para
 Es ist z. B. möglich den init-Prozess gegen die /bin/bash auszutauschen um z. B. ein vergessenes root-Passwort zu ändern.
 
 ## Startprotokollierung
+Das Programm `dmesg` liest den Kernel-Ring-Buffer aus und gibt die Meldung aus. Wegen der großen Datenmenge sollte die Ausgabe in eine Datei umgelietet werden, oder mit `less` gepipet werden.
+`dmesg` liefert nur kurz nach dem Start brauchbare Informationen. Informationen die länger zurük liegen können in der Datei `/var/log/messages`. Auch hier empfiehlt sich die Ausgabe zu kürzen.
+
+# Runlevel wechseln und das System anhalten und neu starten
+
+## Runlevel und ihre Funkzion
+Runlevel bezeichnen den Zustand des Systems
+
+- Runlevel0 = Runlevel0 schaltet das Gerät aus.
+- Runlevel1 = Auch RunlevelS für Single User Mode. Das Betriebssystem stellt rudimentäre Funktionen ohne Netzwerkanbindung zur Verfügung.
+- Runlevel2 = In der Regel wird eine Multi-User-Umgebung ohne grafische Oberfläche und, bei manchen Distributionen, auch Netzwerkanbindung zur Verfügung gestellt.
+- Runlevel3 = Auf jeden fall ist eine Multi-User-Umgebung und Netzwerkanbindung vorhanden. Unterschiede werden von Distributionen nur bei der grafischen Oberfläche gemacht.
+- Runlevel4 = Ist nicht vergeben.
+- Runlevel5 = Unterstützt Multi-User-Umgebung, Netzwerk und wenn installiert auch eine grafische Oberfläche. Höchstest funktionales Runlevel.
+- Runlevel6 = Startet das System neu.
+
+## inittab
+Die Datei ist Konfigurationsdatei für den init-Prozess. Hier kann z .B. festgelegt werden in welchem Runlevel das System starten soll. Desweiteren kann eigesehen werden, wie die Runlevel in einer Distribution organisiert sind.
+
+Die meisten Distributionen stellen von sich aus sechs Konsolen bereit, auf denen man gleichzeitig arbeiten kann. Es ist auch möglich Konsolen hin zu zufügen oder zu enternen.
+
+Bsp.:
+`1:2345:respawn:/sbin/mingetty --noclear tty1`  
+`2:2345:respawn:/sbin/mingetty tty2`
+`3:2345:respawn:/sbin/mingetty tty3`
+usw..
+
+Die erste Ziffer ist die ID der zu startenden Konsole. Sie muss mit der Nummer des verwendeten Terminals übereinstimmen. Nach dem ersten Doppelpunkt stehen die Runlevel, in denen die Konsole verfügbar seien soll. Das `respawn` besagt, dass sie Konsole nach dem beenden, automatisch wieder gestartet wird. Das kann passieren wenn `mingetty` ein Benutzeranmeldung mit falschem Passwort an `/bin/login` übergibt. Auch nach einem Logout muss eine neue Instanz gestartet werden.
